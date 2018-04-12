@@ -1,0 +1,104 @@
+<section id="speakers">
+  <div class="container">
+    <!-- Title & Subtitle -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="section-title">
+          <h2 class="text-center"><span>Speakers</span></h2>
+          <p class="subtitle text-center">Every year we invite speakers from various fields such as the freedom movement, cryptoanarchy, sharing economy, cryptocurrencies, political art, hacking and much more.</p>
+        </div>
+      </div>
+    </div>
+    <!-- /.Title & Subtitle -->
+
+    {{#each speakerRows}}
+    <div class="row">
+      {{#each .}}
+      <div class="col-md-3 col-sm-6 col-xs-8 col-xs-offset-2 col-sm-offset-0 text-center">
+        <!-- Speaker -->
+        <div class="speaker-item">
+          <a href="javascript:void(0)" data-toggle="modal" {{#if longDescription}}data-target="#speaker_{{slugify displayName}}"{{/if}}>
+            <figure class="speaker accent-bg"> <img src="/media/images/transparent.png" data-lazy="{{photo.url}}" width="300" height="300" alt="{{displayName}}" class="img-responsive center-block" />
+              {{#withFirst talks}}
+              <figcaption>
+                <p class="text-uppercase accent">{{name}}</p>
+              </figcaption>
+              {{/withFirst}}
+              {{#isEmpty talks}}
+                <figcaption>
+                  <p class="text-uppercase accent">{{#if longDescription}}More info{{else}}Coming soon{{/if}}</p>
+                </figcaption>
+              {{/isEmpty}}
+            </figure>
+          </a>
+          <p><span class="speaker-accent">{{displayName}}</span>
+            <br/> {{shortDescription}}</p>
+        </div>
+        <!-- /.Speaker -->
+      </div>
+
+      <!-- Modal -->
+      <div class="modal fade" id="speaker_{{slugify displayName}}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h2 class="modal-title" id="{{displayName}}">{{displayName}}</h2>
+            </div>
+            <div class="modal-body clearfix">
+              <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                  <img src="/media/images/transparent.png" data-lazy="{{photo.url}}" width="200" height="200" alt="{{displayName}}" class="img-responsive" />
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                  <p>
+                    {{longDescription}}
+                  </p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-12">
+                  {{#forEach talks}}
+                    <h4>{{name}}</h4>
+                    <div class="mrgn-10-btm">
+                      <span class="label label-main">{{#if starts}}{{moment starts "dddd HH:mm"}} - {{/if}}{{room.name}}</span>
+                    </div>
+                    <p>
+                      {{description}}
+                    </p>
+                    {{#unless isLast}}
+                      <hr>
+                    {{/unless}}
+                  {{/forEach}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{/each}}
+    </div>
+    {{#eq @index 1}}
+  </div>
+  <div class="container container-expand">
+    {{/eq}}
+    {{/each}}
+  <!-- /.Speakers List -->
+  </div>
+
+  <p class="subtitle text-center">And many more...</p>
+  {{!
+  <div class="container">
+    <!-- Speaker CTA Button -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="mrgn-50-top text-center"><a href="javascript:void(0)" class="btn btn-main-ghost see-more" role="button">See more speakers</a></div>
+      </div>
+    </div>
+    <!-- /.Speaker CTA Button -->
+  </div>
+  <!-- /.container -->
+  }}
+</section>

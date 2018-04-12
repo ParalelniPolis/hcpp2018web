@@ -1,0 +1,40 @@
+<section id="newsletter">
+  <div class="container">
+    <!-- Title & Subtitle -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="section-title">
+          <h2 class="white text-center">Newsletter</h2>
+          <p class="subtitle white text-center">
+            Subscribe to our newsletter to stay informed.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- /.Title & Subtitle -->
+
+    <!-- Newsletter Form -->
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1 text-center">
+        {{#if mailchimp_message}}
+          <div class="subtitle white text-center">
+            {{mailchimp_message}}
+          </div>
+        {{else}}
+        <form action="/subscribe" method="POST" enctype="multipart/form-data" class="form-inline" id="newsletterForm" style="visibility: visible; animation-name: zoomIn;">
+          <input type="hidden" name="list_id" value="f0126cb06b">
+          <div class="form-group">
+            <label class="sr-only" for="email">Your Email</label>
+            <input type="email" name="email" class="form-control" placeholder="Your Email *" id="email" required data-validation-required-message="Please enter your email address." aria-invalid="false">
+            <p class="help-block text-danger"></p>
+          </div>
+          <button type="submit" class="btn btn-main-color">Subscribe</button>
+          <div id="success"></div>
+        </form>
+        {{/if}}
+      </div>
+    </div>
+    <!-- /.Newsletter Form -->
+  </div>
+  <!-- /.container -->
+</section>
