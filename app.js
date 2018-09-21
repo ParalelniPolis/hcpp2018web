@@ -1,41 +1,39 @@
 require('dotenv').config({silent: true});
 
-var express = require('express');
-var compression = require('compression');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var exphbs  = require('express-handlebars');
-var helpers = require('handlebars-helpers')();
-var mcapi = require('mailchimp-api/mailchimp');
-var helmet = require('helmet');
-var session = require('express-session');
-var moment = require('moment-timezone');
-var slugify = require('slugify');
+const express = require('express');
+const compression = require('compression');
+const path = require('path');
+const favicon = require('serve-favicon');
+const logger = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const exphbs  = require('express-handlebars');
+const helpers = require('handlebars-helpers')();
+const mcapi = require('mailchimp-api/mailchimp');
+const helmet = require('helmet');
+const session = require('express-session');
+const moment = require('moment-timezone');
+const slugify = require('slugify');
 recaptcha = require('express-recaptcha');
 
 // routes
-var indexRoute = require('./routes/index');
-var conductRoute = require('./routes/code_of_conduct');
-var subscribeRoute = require('./routes/subscribe');
-var contactRoute = require('./routes/contact');
-var scheduleRoute = require('./routes/schedule');
-var rossRoute = require('./routes/ross');
-var tvRoute = require('./routes/tv');
+const indexRoute = require('./routes/index');
+const conductRoute = require('./routes/code_of_conduct');
+const subscribeRoute = require('./routes/subscribe');
+const contactRoute = require('./routes/contact');
+const scheduleRoute = require('./routes/schedule');
+const rossRoute = require('./routes/ross');
+const tvRoute = require('./routes/tv');
 
-var app = express();
+const app = express();
 
 // set enviroment variable
-var env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env === 'development';
 app.locals.APP_NAME = 'Hackers Congress Paralelní Polis 2018';
 
-app.locals.CAPTCHA_HASHES = process.env.CAPTCHA_HASHES;
-
-var sessionSecret = process.env.SESSION_SECRET;
+const sessionSecret = process.env.SESSION_SECRET;
 
 if (typeof sessionSecret === 'undefined') {
   throw new Error('Session key is not set');
@@ -114,7 +112,7 @@ app.get('/en', function(req, res) {
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    const err = new Error('Not Found');
     err.status = 404;
     next(err);
 });

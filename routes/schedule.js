@@ -1,18 +1,17 @@
-var moment = require('moment-timezone');
-var _ = require('lodash');
-var fs = require('fs');
-var express = require('express');
-var router = express.Router();
-var fetch = require('node-fetch');
+const moment = require('moment-timezone');
+const _ = require('lodash');
+const express = require('express');
+const router = express.Router();
+const fetch = require('node-fetch');
 
 /* GET page. */
 
-var pageTitle = 'Schedule';
-var hashTitle = '#HCPP18';
-var pageDescription = 'Hackers Congress Paralelní Polis is one of the premier events for hackers, artists, activists, libertarians, and cryptoenthusiasts in Europe.';
+const pageTitle = 'Schedule';
+const hashTitle = '#HCPP18';
+const pageDescription = 'Hackers Congress Paralelní Polis is one of the premier events for hackers, artists, activists, libertarians, and cryptoenthusiasts in Europe.';
 
-var formatApiData = function(talks) {
-  var scheduleData = talks.map(function(event) {
+const formatApiData = (talks) => {
+  const scheduleData = talks.map((event) => {
     event.groupDate = moment(event.starts).format('DD-MM-YYYY');
 
     return event;
@@ -21,38 +20,55 @@ var formatApiData = function(talks) {
   return _.groupBy(scheduleData, 'groupDate');
 };
 
-var requestBody = {
+const requestBody = {
   operationName:"talksQuery",
-  query:"query talksQuery { allTalks(filter: {status: ACTIVE}, orderBy: starts_ASC) { id name description starts ends room{ id name } speakers(filter: {status: ACTIVE}){ id displayName photo{ id url } } } }",
+  query:`query talksQuery {
+          allTalks(
+            filter: {status: ACTIVE}, orderBy: starts_ASC
+          ) {
+            id
+            name
+            description
+            starts
+            ends
+            room{ id name }
+            speakers(
+              filter: {status: ACTIVE}
+            ) {
+              id
+              displayName
+              photo{ id url }
+            }
+          }
+        }`,
   variables:{}
 };
 
-router.get('/', function(req, res) {
+router.get('/', async (req, res) => {
+  try {
+    const data = await fetch(process.env.GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(requestBody)
+    });
+    const talks = await data.json();
+    const schedule = formatApiData(talks.data.allTalks);
 
-  fetch(process.env.GRAPHQL_ENDPOINT, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(requestBody)
-  }).then(function (data) {
-    return data.json();
-  }).then(function(talks) {
-    var schedule = formatApiData(talks.data.allTalks);
-
-    res.render('schedule', {
+    return res.render('schedule', {
       protocol: req.protocol,
       hostname: req.hostname,
       path: req.originalUrl,
       title: pageTitle,
       title_hash: hashTitle,
       description: pageDescription,
-      day1: schedule['06-10-2017'],
-      day2: schedule['07-10-2017'],
-      day3: schedule['08-10-2017']
+      day1: schedule['05-10-2018'],
+      day2: schedule['06-10-2018'],
+      day3: schedule['07-10-2018']
     });
-
-  }).catch(function(error) {
+  }
+  catch (error) {
     throw error;
-  });
+  }
 });
 
 module.exports = router;

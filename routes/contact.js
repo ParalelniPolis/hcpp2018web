@@ -1,16 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var multer  = require('multer')();
-var nodemailer = require('nodemailer');
+const express = require('express');
+const router = express.Router();
+const multer  = require('multer')();
+const nodemailer = require('nodemailer');
 
-var emailUser = process.env.EMAIL_USER;
-var emailPass = process.env.EMAIL_PASS;
-var destinationAddress = process.env.DESTINATION_ADDRESS;
+const emailUser = process.env.EMAIL_USER;
+const emailPass = process.env.EMAIL_PASS;
+const destinationAddress = process.env.DESTINATION_ADDRESS;
 
 // create reusable transporter object using the default SMTP transport
-var transporter = nodemailer.createTransport('smtps://'+ emailUser +'%40gmail.com:'+ emailPass +'@smtp.gmail.com');
+const transporter = nodemailer.createTransport('smtps://'+ emailUser +'%40gmail.com:'+ emailPass +'@smtp.gmail.com');
 
-router.post('/', [multer.array(), recaptcha.middleware.verify], function(req, res) {
+router.post('/', [multer.array(), recaptcha.middleware.verify], (req, res) => {
 
   if (req.recaptcha.error) {
     if (req.body.type === 'fetch') {
@@ -27,7 +27,7 @@ router.post('/', [multer.array(), recaptcha.middleware.verify], function(req, re
   }
 
   // setup e-mail data with unicode symbols
-  var mailOptions = {
+  const mailOptions = {
     from: '"'+ req.body.name +'" <'+ req.body.email +'>', // sender address
     to: destinationAddress, // list of receivers
     subject: 'Contact form HCPP18 - ' + req.body.subject, // Subject line
@@ -40,7 +40,7 @@ router.post('/', [multer.array(), recaptcha.middleware.verify], function(req, re
   };
 
   // send mail with defined transport object
-  transporter.sendMail(mailOptions, function(error, info){
+  transporter.sendMail(mailOptions, (error, info) => {
     if (error){
       if (req.body.type === 'fetch') {
         console.log(error);

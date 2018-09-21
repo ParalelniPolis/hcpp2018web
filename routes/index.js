@@ -1,56 +1,89 @@
-var express = require('express');
-var router = express.Router();
-var fetch = require('node-fetch');
-var moment = require('moment-timezone');
+const express = require('express');
+const router = express.Router();
+const fetch = require('node-fetch');
+const moment = require('moment-timezone');
 
 /* GET home page. */
 
-var hashTitle = '#HCPP18';
-var pageDescription = 'Hackers Congress Paralelní Polis is one of the premier events for hackers, artists, activists, libertarians, and cryptoenthusiasts in Europe.';
-var includeHeader = true;
+const hashTitle = '#HCPP18';
+const pageDescription = 'Hackers Congress Paralelní Polis is one of the premier events for hackers, artists, activists, libertarians, and cryptoenthusiasts in Europe.';
+const includeHeader = true;
 
-router.get('/', recaptcha.middleware.render, function (req, res) {
-
-  var mailchimpMessage = null;
+router.get('/', recaptcha.middleware.render, async (req, res) => {
+  let mailchimpMessage = null;
 
   if (req.query.subscribe === 'success') {
     mailchimpMessage = 'You subscribed successfully! Look for the confirmation email.';
   }
   else if (req.query.subscribe === 'error') {
-    mailchimpMessage = 'There was an error subscribing user. ' + req.session.subscribeErrorMsg;
+    mailchimpMessage = `There was an error subscribing user. ${req.session.subscribeErrorMsg}`;
   }
 
-  var contactMessage = null;
+  let contactMessage = null;
 
   if (req.query.subscribe === 'success') {
     contactMessage = 'Your message was successfully sent! We will contact you soon.';
   }
   else if (req.query.subscribe === 'error') {
-    contactMessage = 'There was an error sending message. ' + req.session.contactErrorMsg;
+    contactMessage = `There was an error sending message. ${req.session.contactErrorMsg}`;
   }
 
-  var requestBody = {
+  const requestBody = {
     operationName:"speakersQuery",
-    query:"query speakersQuery($time: DateTime) { allSpeakers(filter: {status: ACTIVE}, orderBy: position_ASC) { id displayName shortDescription longDescription position photo{ url } talks(filter: {status: ACTIVE}){ name description starts ends room{ name } } } allTalks(filter: {status: ACTIVE, starts_gt: $time}, orderBy: starts_ASC, first: 3){ name description starts ends room{ name } speakers{ displayName photo{ url } } } }",
+    query:`query speakersQuery($time: DateTime) {
+              allSpeakers(
+                filter: {status: ACTIVE},
+                orderBy: position_ASC
+              ) {
+                id
+                displayName
+                shortDescription
+                longDescription
+                position
+                photo{ url }
+                talks(filter: {status: ACTIVE})
+                  {
+                    name
+                    description
+                    starts
+                    ends
+                    room{ name }
+                  }
+                }
+              allTalks(
+                filter: {status: ACTIVE, starts_gt: $time},
+                orderBy: starts_ASC, first: 3
+              ) {
+              name
+              description
+              starts
+              ends
+              room{ name }
+              speakers{
+                displayName
+                photo{ url }
+              }
+            }
+          }`,
     variables:{
       time: moment.tz('Europe/Prague').format()
     }
   };
 
-  fetch(process.env.GRAPHQL_ENDPOINT, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(requestBody)
-  }).then(function (data) {
-    return data.json();
-  }).then(function(queryData) {
-    var speakerRows = [];
+  try {
+    const data = await fetch(process.env.GRAPHQL_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(requestBody)
+    });
+    const queryData = await data.json();
+    const speakerRows = [];
 
     while (queryData.data.allSpeakers.length) {
       speakerRows.push(queryData.data.allSpeakers.splice(0, 4));
     }
 
-    res.render('index', {
+    return res.render('index', {
       protocol: req.protocol,
       hostname: req.hostname,
       path: req.originalUrl,
@@ -63,9 +96,9 @@ router.get('/', recaptcha.middleware.render, function (req, res) {
       smallSchedule: queryData.data.allTalks,
       captcha: req.recaptcha
     });
-  }).catch(function(error) {
-    throw error;
-  });
+  } catch (e) {
+    throw e;
+  }
 });
 
 module.exports = router;
