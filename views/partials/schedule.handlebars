@@ -10,36 +10,6 @@
       </div>
     </div>
     <!-- /.Title & Subtitle -->
-    <!-- Timeline -->
-    <div id="timeline">
-      {{#forEach smallSchedule}}
-          <!-- Timeline Item -->
-          <div class="timeline-item">
-            <div class="timeline-icon"> <i class="fa fa-star fa-lg"></i> </div>
-            <div class="timeline-content {{#ifEven index}}right{{/ifEven}}">
-              <div class="text-center text-bold mrgn-20-btm">
-                {{#each speakers}}
-                <div class="inline-block">
-                  <img src="/media/images/transparent.png" data-lazy="{{photo.url}}" alt="{{displayName}}" class="img-responsive center-block img-circle img-speaker">
-                  {{displayName}}
-                </div>
-                {{/each}}
-              </div>
-              <p class="text-big text-center text-bold time">{{moment starts 'dddd HH:mm'}}</p>
-              <h2>{{name}}</h2>
-              <p>{{{breaklines description}}}</p>
-              <span class="label label-main">{{room.name}}</span> </div>
-          </div>
-          <!-- /.Timeline Item -->
-      {{/forEach}}
-
-      <!-- Timeline Full Schedule Link -->
-      <div class="timeline-item">
-        <div class="timeline-icon"> <a href="/schedule"><i class="fa fa-angle-double-down fa-2x"></i></a> </div>
-      </div>
-      <!-- /.Timeline Full Schedule Link -->
-    </div>
-    <!-- /.Timeline -->
 
     <div class="row text-center mrgn-80-top">
       <a href="/schedule" class="btn btn-main-color">See full schedule</a>

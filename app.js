@@ -23,7 +23,6 @@ const subscribeRoute = require('./routes/subscribe');
 const contactRoute = require('./routes/contact');
 const scheduleRoute = require('./routes/schedule');
 const rossRoute = require('./routes/ross');
-const tvRoute = require('./routes/tv');
 
 const app = express();
 
@@ -98,7 +97,6 @@ app.use('/subscribe', subscribeRoute);
 app.use('/contact', contactRoute);
 app.use('/schedule', scheduleRoute);
 app.use('/ross', rossRoute);
-app.use('/tv', tvRoute);
 
 // redirect old address
 app.get('/eng', function(req, res) {
